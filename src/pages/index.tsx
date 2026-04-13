@@ -73,14 +73,7 @@ const projects = [
     image: "/assets/rahathayurvedic.webm",
     href: "https://rahathayurvedic.vercel.app",
     badge: "Web",
-  },
-  {
-    title: "This Portfolio",
-    description: "Personal portfolio website built with Next.js, TypeScript & Tailwind CSS",
-    image: "/assets/portfolio.webm",
-    href: "#",
-    badge: "Web",
-  },
+  }
 ];
 
 const services = [
