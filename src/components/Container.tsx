@@ -85,7 +85,7 @@ export default function Container(props: ContainerProps) {
   const meta = {
     title: "Mishab",
     description: `Full-Stack Web Developer.`,
-    image: "/assets/logo.webp",
+    image: "/web-app-manifest-512x512.png",
     type: "website",
     ...customMeta,
   };
