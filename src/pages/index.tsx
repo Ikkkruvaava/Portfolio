@@ -77,7 +77,7 @@ const experience = [
   },
   {
     role: "Media Coordinator & Leadership Member",
-    company: "Noorul Ulama — Jamia Nooriyya Arabiyya Pattikkad Students Union",
+    company: "Noorul Ulama — Jamia Nooriyya Arabiyya Pattikkad",
     period: "2024 – 2026",
     desc: "Contributed to institutional media management and coordination within the college students union. Led media initiatives, managed digital communications, and held a leadership role representing the student body.",
     icon: UsersRound,
@@ -313,7 +313,7 @@ export default function Home() {
                 data-scroll-speed=".06"
                 className="mt-3 max-w-lg tracking-tight text-muted-foreground 2xl:text-xl"
               >
-                Full-Stack Web & Mobile Developer — I build fast, scalable, and
+                Full-Stack Web & Application Developer — I build fast, scalable, and
                 user-focused digital products using{" "}
                 <span className="text-foreground">React</span>,{" "}
                 <span className="text-foreground">Node.js</span>, and{" "}
