@@ -57,15 +57,14 @@ const techStack = [
   { name: "MongoDB", category: "Database" },
   { name: "React Native", category: "Mobile" },
   { name: "Expo", category: "Mobile" },
-  { name: "Docker", category: "DevOps" },
 ];
 
 const experience = [
   {
-    role: "Freelance Full-Stack Developer",
-    company: "DigiBayt",
-    period: "2023 – Present",
-    desc: "Designed and developed full-stack web & mobile applications for clients across various industries. Delivered 20+ projects including e-commerce platforms, portals, and content apps.",
+    role: "Senior Web Developer",
+    company: "DigiBayt · Full-time",
+    period: "Jan 2024 – Present · India, Remote",
+    desc: "Design, develop, and maintain dynamic, user-friendly websites and web applications. Turning creative concepts into responsive, high-performing digital experiences using React, Node.js, and modern full-stack technologies.",
     icon: Briefcase,
   },
   {
