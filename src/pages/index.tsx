@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import { useEffect, useRef, Suspense, useState } from "react";
 import styles from "@/styles/Home.module.css";
 import { Button } from "@/components/ui/button";
+import { useReducedMotion } from "framer-motion";
 import {
   ChevronRight,
   Code2,
@@ -197,6 +198,13 @@ export default function Home() {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [current, setCurrent] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const shouldReduce = useReducedMotion();
+
+  // Detect mobile once on mount
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   // handle scroll
   useEffect(() => {
@@ -204,6 +212,8 @@ export default function Home() {
     const navLinks = document.querySelectorAll(".nav-link");
 
     async function getLocomotive() {
+      // Skip Locomotive on mobile — native scroll is faster
+      if (window.innerWidth < 768) return;
       const Locomotive = (await import("locomotive-scroll")).default;
       new Locomotive({
         el: refScrollContainer.current ?? new HTMLElement(),
@@ -249,14 +259,38 @@ export default function Home() {
     });
   }, [carouselApi]);
 
-  // card hover effect
+  // Lazy-load project videos via IntersectionObserver
   useEffect(() => {
+    const videos = document.querySelectorAll<HTMLVideoElement>("video[data-lazy]");
+    if (!videos.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            if (!video.src && video.dataset.src) {
+              video.src = video.dataset.src;
+            }
+            void video.play().catch(() => {/* autoplay blocked */});
+            observer.unobserve(video);
+          }
+        });
+      },
+      { rootMargin: "200px" },
+    );
+    videos.forEach((v) => observer.observe(v));
+    return () => observer.disconnect();
+  }, [count]); // re-run when carousel mounts
+
+  // Card hover tilt — skip on touch/mobile devices
+  useEffect(() => {
+    if (window.matchMedia("(hover: none)").matches) return;
     const tilt: HTMLElement[] = Array.from(document.querySelectorAll("#tilt"));
     VanillaTilt.init(tilt, {
       speed: 300,
       glare: true,
       "max-glare": 0.1,
-      gyroscope: true,
+      gyroscope: false,
       perspective: 900,
       scale: 0.9,
     });
@@ -367,16 +401,19 @@ export default function Home() {
             </div>
           </div>
 
-          <div
-            data-scroll
-            data-scroll-speed="-.01"
-            id={styles["canvas-container"]}
-            className="mt-14 h-full w-full xl:mt-0"
-          >
-            <Suspense fallback={<span>Loading...</span>}>
-              <Spline scene="/assets/scene.splinecode" />
-            </Suspense>
-          </div>
+          {/* 3D Scene — hidden on mobile to save GPU/memory */}
+          {!isMobile && (
+            <div
+              data-scroll
+              data-scroll-speed="-.01"
+              id={styles["canvas-container"]}
+              className="mt-14 h-full w-full xl:mt-0"
+            >
+              <Suspense fallback={<span>Loading...</span>}>
+                <Spline scene="/assets/scene.splinecode" />
+              </Suspense>
+            </div>
+          )}
         </section>
 
         {/* ── About ── */}
@@ -445,8 +482,8 @@ export default function Home() {
                 {experience.map((exp, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={shouldReduce ? {} : { opacity: 0, y: 20 }}
+                    whileInView={shouldReduce ? {} : { opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.15, duration: 0.6 }}
                     viewport={{ once: true }}
                     className="flex gap-4 rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-primary/30 hover:bg-white/8"
@@ -526,13 +563,14 @@ export default function Home() {
                             aria-label={`Visit ${project.title} — opens in new tab`}
                             className="relative block"
                           >
-                            {/* video */}
+                            {/* video — lazy loaded via IntersectionObserver */}
                             <video
-                              src={project.image}
-                              autoPlay
+                              data-lazy
+                              data-src={project.image}
                               loop
                               muted
                               playsInline
+                              preload="none"
                               aria-label={`${project.title} project preview`}
                               title={`${project.title} — ${project.description}`}
                               className="aspect-video h-full w-full rounded-t-md bg-primary object-cover transition-transform duration-500 group-hover:scale-[1.02]"
@@ -599,8 +637,8 @@ export default function Home() {
             </div>
 
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={shouldReduce ? {} : { opacity: 0, y: -10 }}
+              whileInView={shouldReduce ? {} : { opacity: 1, y: 0 }}
               transition={{ duration: 0.7, staggerChildren: 0.5 }}
               viewport={{ once: true }}
               className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
@@ -608,8 +646,8 @@ export default function Home() {
               {services.map((service, i) => (
                 <motion.div
                   key={service.service}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={shouldReduce ? {} : { opacity: 0, y: 20 }}
+                  whileInView={shouldReduce ? {} : { opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   viewport={{ once: true }}
                   className="group flex flex-col items-start rounded-xl border border-white/10 bg-white/5 p-8 shadow-md backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-white/10 hover:shadow-primary/5"

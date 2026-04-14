@@ -135,6 +135,9 @@ export default function Container(props: ContainerProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // true  = first visit  → show preloader with exit animation
+  // false = revisit      → remove preloader block instantly, no animation
+  const [firstVisit, setFirstVisit] = useState<boolean>(true);
 
   const { children, ...customMeta } = props;
   const router = useRouter();
@@ -156,12 +159,22 @@ export default function Container(props: ContainerProps) {
   }, []);
 
   // Preloader
+  // On revisit : setFirstVisit(false) removes the AnimatePresence block from the
+  //              DOM immediately — no 1 s exit animation blocking the navbar.
+  // On first visit: normal 800 ms countdown, then exit animation plays.
   useEffect(() => {
+    const alreadySeen = sessionStorage.getItem("preloader-seen");
+    if (alreadySeen) {
+      setFirstVisit(false);           // instantly unmounts preloader & AnimatePresence
+      document.body.style.cursor = "default";
+      return;
+    }
     const t = setTimeout(() => {
-      setIsLoading(false);
+      setIsLoading(false);            // triggers AnimatePresence exit animation
       document.body.style.cursor = "default";
       window.scrollTo(0, 0);
-    }, 2000);
+      sessionStorage.setItem("preloader-seen", "true");
+    }, 800);
     return () => clearTimeout(t);
   }, []);
 
@@ -332,10 +345,12 @@ export default function Container(props: ContainerProps) {
         </nav>
       </header>
 
-      {/* Preloader */}
-      <AnimatePresence mode="wait">
-        {isLoading && <Preloader />}
-      </AnimatePresence>
+      {/* Preloader — only rendered on first visit; removed instantly on revisit */}
+      {firstVisit && (
+        <AnimatePresence mode="wait">
+          {isLoading && <Preloader />}
+        </AnimatePresence>
+      )}
 
       {/* Main content */}
       <main id="main-content" className={cn("container", props.className)}>
