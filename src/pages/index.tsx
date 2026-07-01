@@ -65,7 +65,7 @@ const techStack = [
 const experience = [
   {
     role: "Senior Web Developer",
-    company: "DigiBayt · Full-time",
+    company: "DigiBayt · Hybrid",
     period: "Jan 2024 – Present · India, Remote",
     desc: "Design, develop, and maintain dynamic, user-friendly websites and web applications. Turning creative concepts into responsive, high-performing digital experiences using React, Node.js, and modern full-stack technologies.",
     icon: Briefcase,
@@ -289,8 +289,10 @@ export default function Home() {
 
   return (
     <Container>
-      <div ref={refScrollContainer}>
+      <div ref={refScrollContainer} className="relative">
         <Gradient />
+        <div className="box-gradient1 img_bg-1" aria-hidden="true"></div>
+        <div className="box-gradient1 img_bg-2" aria-hidden="true"></div>
 
         {/* ── Hero ── */}
         <section
@@ -406,7 +408,7 @@ export default function Home() {
         </section>
 
         {/* ── About ── */}
-        <section id="about" data-scroll-section aria-label="About Mishab" className="py-12">
+        <section id="about" data-scroll-section aria-label="About Mishab" className="py-20">
           <div className="flex max-w-6xl flex-col justify-start space-y-16">
             {/* Headline + stats */}
             <div className="space-y-10">
@@ -499,7 +501,7 @@ export default function Home() {
         </section>
 
         {/* ── Projects ── */}
-        <section id="projects" data-scroll-section aria-label="Portfolio projects" className="py-12">
+        <section id="projects" data-scroll-section aria-label="Portfolio projects" className="py-20">
           {/* gradient */}
 
           <div>
@@ -576,7 +578,7 @@ export default function Home() {
         </section>
 
         {/* ── Services ── */}
-        <section id="services" data-scroll-section aria-label="Services offered" className="py-12">
+        <section id="services" data-scroll-section aria-label="Services offered" className="py-20">
           <div className="flex flex-col justify-start space-y-10">
             <div className="space-y-3">
               <span className="text-gradient clash-grotesk text-sm font-semibold tracking-tighter">
@@ -627,7 +629,7 @@ export default function Home() {
         </section>
 
         {/* ── Contact ── */}
-        <section id="contact" data-scroll-section aria-label="Contact information" className="py-12">
+        <section id="contact" data-scroll-section aria-label="Contact information" className="py-20">
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-primary/10 via-background to-white/5 px-8 py-16 text-center xl:py-24">
             {/* subtle glow */}
             <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
